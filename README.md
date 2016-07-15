@@ -66,15 +66,14 @@ And then the translations will be reactive to changes in the `locale` value.
 Localization carries the problem of different countries having different dialects. For example, french and canadian french. You can make distinctions as such:
 
 ```javascript
-// i18n/fr.js
 export default {
-	'Hello world': 'Bonjour le monde'
-	'Goodbye': 'Au Revoir'
-}
-
-// i18n/fr_CA.js
-export default {
-	'Hello world': 'Bonjour tout le monde, du Canada'
+    'fr': {
+        'Hello world': 'Bonjour le monde',
+        'Goodbye': 'Au Revoir'
+    },
+    'fr_CA': {
+        'Hello world': 'Bonjour tout le monde, du Canada'
+    }
 }
 ```
 
