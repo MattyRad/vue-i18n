@@ -5,7 +5,7 @@
   },
   "name": "voo-i18n",
   "description": "A small package for implementing translations in Vue.js",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "repository": {
     "url": "git+https://github.com/MattyRad/vue-i18n.git"
   },
