@@ -1,7 +1,7 @@
 {
   "author": {
-    name: "Matthew Radford",
-    email: "matt.radford.unr@gmail.com"
+    "name": "Matthew Radford",
+    "email": "matt.radford.unr@gmail.com"
   },
   "name": "voo-i18n",
   "description": "A small package for implementing translations in Vue.js",

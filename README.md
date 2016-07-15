@@ -18,37 +18,31 @@ Cons:
 
 # Installation
 
-npm install voo-i18n
+> npm install voo-i18n
 
+```javascript
 import i18n from 'voo-i18n'
 
-Vue.use(i18n)
+let translations = {
+	'es': {
+		'Hello world': 'Hola Mundo'
+	},
+	'fr': {
+		'Hello world': 'Bonjour le monde'
+	},
+	'pirate': {
+		'Hello world': 'Avast, ye trecharous earth!'
+	}
+}
+
+Vue.use(i18n, translations)
+```
 
 # Usage
 
-Make a folder "i18n" in the root of the javascript application with your locales, format them as such:
+Set a default locale in the root data of your application.
 
-// i18n/es.js
-export deault {
-	'Hello world': 'Hola Mundo'
-}
-
-// i18n/fr.js
-export default {
-	'Hello world': 'Bonjour le monde'
-}
-
-// i18n/pirate.js
-export default {
-	'Hello world': 'Avast, ye trecharous earth!'
-}
-
-Specify those locales:
-
-Vue.config.alternate_locales = ['es', 'fr', 'pirate']
-
-Then set a default locale in the root data of your application.
-
+```javascript
 <template>
 	<h1>{{ 'Hello world' | translate }}</h1>
 	<h1>{{ $t('Hello world') }}</h1>
@@ -63,6 +57,7 @@ Then set a default locale in the root data of your application.
 		}
 	}
 </script>
+```
 
 And then the translations will be reactive to changes in the `locale` value.
 
@@ -70,6 +65,7 @@ And then the translations will be reactive to changes in the `locale` value.
 
 Localization carries the problem of different countries having different dialects. For example, french and canadian french. You can make distinctions as such:
 
+```javascript
 // i18n/fr.js
 export default {
 	'Hello world': 'Bonjour le monde'
@@ -80,5 +76,6 @@ export default {
 export default {
 	'Hello world': 'Bonjour tout le monde, du Canada'
 }
+```
 
-When the locale is set to fr_CA, {{ 'Goodbye' | translate }} still translates to 'Au Revoir'.
+When the locale is set to `fr_CA`, `{{ 'Goodbye' | translate }}` still translates to 'Au Revoir'.
