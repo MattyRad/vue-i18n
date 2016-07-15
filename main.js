@@ -23,7 +23,7 @@ module.exports = {
         }
 
         if (window.console) {
-          console.warn(`Translations exist for the locale ${this.$root.locale}, but there is not an entry for '${key}'`)
+          console.warn("Translations exist for the locale " + this.$root.locale + ", but there is not an entry for '" + key + "'")
         }
       }
 
