@@ -1,4 +1,4 @@
-export default {
+module.exports {
   install: function (Vue, locale_translations) {
 
     Vue.locale_translations = locale_translations; // FIXME: scope
