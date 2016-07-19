@@ -4,7 +4,7 @@ module.exports = {
     Vue.locale_translations = locale_translations; // FIXME: scope
 
     Vue.prototype.$t = function (key) {
-      let translations = Vue.locale_translations[this.$root.locale] // FIXME: scope
+      var translations = Vue.locale_translations[this.$root.locale] // FIXME: scope
 
       if (translations) {
         if (key in translations) {
@@ -13,7 +13,7 @@ module.exports = {
 
         // Also fall back to a sublocale, e.g. "fr" translations from the locale "fr_CA"
         if (this.$root.locale.includes('_')) {
-          let sublocale = this.$root.locale.slice(0, 2)
+          var sublocale = this.$root.locale.slice(0, 2)
 
           translations = locale_translations[sublocale]
 
