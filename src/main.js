@@ -12,7 +12,7 @@ module.exports = {
         }
 
         // Also fall back to a sublocale, e.g. "fr" translations from the locale "fr_CA"
-        if (this.$root.locale.includes('_')) {
+        if (this.$root.locale && (this.$root.locale.indexOf('_') > -1)) {
           var sublocale = this.$root.locale.slice(0, 2)
 
           translations = locale_translations[sublocale]

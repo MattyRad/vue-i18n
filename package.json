@@ -1,15 +1,16 @@
 {
+  "name": "voo-i18n",
+  "version": "1.0.6",
+  "description": "A small package for implementing translations in Vue.js",
   "author": {
     "name": "Matthew Radford",
     "email": "matt.radford.unr@gmail.com"
   },
-  "name": "voo-i18n",
-  "description": "A small package for implementing translations in Vue.js",
-  "version": "1.0.5",
   "repository": {
     "url": "git+https://github.com/MattyRad/vue-i18n.git"
   },
-  "main": "main.js",
+  "license": "MIT",
+  "main": "src/main.js",
   "homepage": "https://github.com/MattyRad/vue-i18n",
   "keywords": [
     "vue",
@@ -17,5 +18,45 @@
     "plugin",
     "i18n",
     "internationalization"
-  ]
+  ],
+  "scripts": {
+    "test": "karma start karma.conf.js"
+  },
+  "browserify": {
+    "transform": [
+      "vueify",
+      "babelify"
+    ]
+  },
+  "dependencies": {
+    "vue": "^1.0.24"
+  },
+  "devDependencies": {
+    "babel-core": "^6.0.0",
+    "babel-plugin-transform-runtime": "^6.0.0",
+    "babel-preset-es2015": "^6.0.0",
+    "babel-runtime": "^5.8.0",
+    "babelify": "^7.2.0",
+    "browserify": "^12.0.1",
+    "browserify-hmr": "^0.3.1",
+    "cross-env": "^1.0.5",
+    "eslint": "^1.10.3",
+    "eslint-plugin-html": "^1.1.0",
+    "http-server": "^0.8.5",
+    "jade": "^1.11.0",
+    "jasmine-core": "^2.4.1",
+    "karma": "^0.13.15",
+    "karma-browserify": "^4.4.2",
+    "karma-jasmine": "^0.3.6",
+    "karma-phantomjs-launcher": "^0.2.1",
+    "karma-spec-reporter": "0.0.23",
+    "phantomjs": "^1.9.19",
+    "proxyquireify": "^3.0.1",
+    "stylus": "^0.52.4",
+    "uglify-js": "^2.5.0",
+    "vue-hot-reload-api": "^1.2.2",
+    "vueify": "^8.0.0",
+    "vueify-insert-css": "^1.0.0",
+    "watchify": "^3.4.0"
+  }
 }
