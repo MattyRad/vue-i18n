@@ -1,15 +1,15 @@
 # vue-i18n
 
-A small package for implementing translations in [Vue.js](http://vuejs.org/). Instead of using a dot based key to fetch a locale string, it just uses the default locale string itself as the key.
+A small package for implementing translations in [Vue.js](http://vuejs.org/). Instead of using a dot based key to fetch a translated string, it just uses the default string itself as the key.
 
-In short `{{ $t('Hello world') }}` instead of `{{ $t('messages.hello') }}`.
+In short `{{ $t('Hello world') }}` instead of `{{ $t('messages.hello_world') }}`. Better yet: `{{ 'Hello world' | translate }}`
 
 There are trade-offs to doing it this way:
 
 Pros:
 - Dead simple code
 - Falling back to the default locale easy, requires no extra logic
-- HTML retains the full language context instead of referring back and forth to string keys
+- HTML retains the full language context instead of referring back and forth to translation keys
 
 Cons:
 - Large strings are unwieldy
@@ -21,6 +21,7 @@ Cons:
 `npm install voo-i18n`
 
 ```javascript
+import Vue from 'vue'
 import i18n from 'voo-i18n'
 
 let translations = {
@@ -31,7 +32,7 @@ let translations = {
 		'Hello world': 'Bonjour le monde'
 	},
 	'pirate': {
-		'Hello world': 'Avast, ye trecharous earth!'
+		'Hello world': 'Land ho!'
 	}
 }
 
@@ -45,7 +46,6 @@ Set a default locale in the root data of your application.
 ```javascript
 <template>
 	<h1>{{ 'Hello world' | translate }}</h1>
-	<h1>{{ $t('Hello world') }}</h1>
 </template>
 
 <script>
@@ -61,9 +61,17 @@ Set a default locale in the root data of your application.
 
 And then the translations will be reactive to changes in the `locale` value.
 
+## Specific locale
+
+You can select a specific locale by passing in the locale param
+
+```html
+<h1>{{ 'Hello world' | translate { locale: 'es' } }}</h1>
+```
+
 ## Fallback locales
 
-Localization carries the problem of different countries having different dialects. For example, french and canadian french. You can make distinctions as such:
+Localization carries the problem of different languages having different dialects. For example, french vs. canadian french. You can make distinctions as such:
 
 ```javascript
 export default {
@@ -77,4 +85,78 @@ export default {
 }
 ```
 
-When the locale is set to `fr_CA`, `{{ 'Goodbye' | translate }}` still translates to 'Au Revoir'.
+When the locale is set to `fr_CA`, `{{ 'Goodbye' | translate }}` still translates to `'Au Revoir'`.
+
+## Variable arguments
+
+__Don't__ do this
+```html
+<p>{{ 'You have used' | translate }} {{ count }} {{ 'out of' | translate }} {{ limit }}</p>
+```
+
+```javascript
+'es': {
+	'You have used': 'Ha utilizado',
+	'out of': 'fuera de'
+},
+```
+
+__Do this__
+```html
+<p>{{ 'You have used {count} out of {limit}' | translate {count, limit} }}</p> <!-- note ES6 syntax -->
+```
+
+```javascript
+'es': {
+	'You have used {count} out of {limit}': 'Ha utilizado {count} de los {limit}'
+},
+```
+
+## Inline HTML
+
+It's often the case that your sentences will not form nice little compartmentalized strings like `Hello world`. Often you'll get HTML spliced in the middle. Fragmented, messy, and possibly not even accurate given the way some foreign languages are structured.
+
+__Don't__ do this
+```html
+    <p>{{ 'Please perform' | translate }} <a href="#">{{ 'this action' | translate }}</a> {{ 'to complete the thing' | translate }}</p>
+```
+
+```javascript
+'es': {
+	'Please perform': 'Por favor, realice',
+	'this action': 'esta acción',
+	'to complete the thing': 'para completar la cosa'
+},
+```
+
+__Do this__
+```html
+<div v-trans="$root.locale" key="Please perform |this action| to complete the thing">
+    <span>Please perform</span><a href="#" @click.prevent="action')">this action</a><span>to complete the thing</span>
+</div>
+```
+```javascript
+'es': {
+	'Please perform |this action| to complete the thing': 'Por favor, realice |esta acción| para completar la cosa'
+},
+```
+
+> Note: The `span` tags above matter. Each segment of text should have its own compartmentalized element
+
+## All Together Now!
+```html
+<div v-trans="$root.locale" key="Thanks for signing up! Confirm |{email} is correct| to continue to the site." :replace="{ email: email }">
+    <span>Thanks for signing up! Confirm </span><a href="#" @click="confirm">{email} is correct</a><span> to continue to the site.</span>
+</div>
+```
+
+```javascript
+'es': {
+	'Thanks for signing up! Confirm |{email} is correct| to continue to the site': 'Gracias por registrarte! Confirmar |{email} es correcta| para continuar al sitio'
+},
+```
+
+
+
+
+
