@@ -2,7 +2,9 @@
 
 A small package for implementing translations in [Vue.js](http://vuejs.org/). Instead of using a dot based key to fetch a translated string, it just uses the default string itself as the key.
 
-In short `{{ $t('Hello world') }}` instead of `{{ $t('messages.hello_world') }}`. Better yet: `{{ 'Hello world' | translate }}`
+In short `{{ $t('Hello world') }}` instead of `{{ $t('messages.hello_world') }}`.
+
+Better yet: `{{ 'Hello world' | translate }}`
 
 There are trade-offs to doing it this way:
 
@@ -14,7 +16,7 @@ Pros:
 Cons:
 - Large strings are unwieldy
 - Small changes (like capitalization) are not recognized
-- Changing strings in the default locale will require updates in all language files (necessary anyway, as the copy has changed)
+- Changing strings in the default locale will require updates in all language files (technically necessary anyway, as the copy has changed)
 
 ## Installation
 
@@ -41,7 +43,7 @@ Vue.use(i18n, translations)
 
 ## Usage
 
-Set a default locale in the root data of your application.
+Set a default locale in the __root__ data of your application.
 
 ```javascript
 <template>
@@ -114,7 +116,7 @@ __Do this__
 
 ## Inline HTML
 
-It's often the case that your sentences will not form nice little compartmentalized strings like `Hello world`. Often you'll get HTML spliced in the middle. Fragmented, messy, and possibly not even accurate given the way some foreign languages are structured.
+It's often the case that your sentences will not form nice little compartmentalized strings like `Hello world`. Often you'll get HTML spliced in the middle.
 
 __Don't__ do this
 ```html
@@ -131,8 +133,8 @@ __Don't__ do this
 
 __Do this__
 ```html
-<div v-trans="$root.locale" key="Please perform |this action| to complete the thing">
-    <span>Please perform</span><a href="#" @click.prevent="action')">this action</a><span>to complete the thing</span>
+<div v-locale="$root.locale" key="Please perform |this action| to complete the thing">
+    <span></span><a href="#" @click.prevent="action')"></a><span></span>
 </div>
 ```
 ```javascript
@@ -141,12 +143,10 @@ __Do this__
 },
 ```
 
-> Note: The `span` tags above matter. Each segment of text should have its own compartmentalized element
-
 ## All Together Now!
 ```html
-<div v-trans="$root.locale" key="Thanks for signing up! Confirm |{email} is correct| to continue to the site." :replace="{ email: email }">
-    <span>Thanks for signing up! Confirm </span><a href="#" @click="confirm">{email} is correct</a><span> to continue to the site.</span>
+<div v-locale="$root.locale" key="Thanks for signing up! Confirm |{email} is correct| to continue to the site." :replace="{ email: email }">
+    <span></span><a href="#" @click="confirm"></a><span></span>
 </div>
 ```
 

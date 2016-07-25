@@ -74,7 +74,7 @@ describe('main.js', () => {
 
   it('will use the v-trans directive to translate an HTML element\'s children', () => {
     let vm = new Vue({
-      template: '<div v-trans="$root.locale" key="Thanks for signing up! Confirm |{email} is correct| to continue to the site" :replace="{ email: email }"><span id="part1">Please perform </span><a id="part2" href="#">this {value} action</a><span id="part3"> to complete the thing</span></div>',
+      template: '<div v-locale="$root.locale" key="Thanks for signing up! Confirm |{email} is correct| to continue to the site" :replace="{ email: email }"><b id="part1"></b><a id="part2" href="#"></a><span id="part3"></span></div>',
       data: function () {
         return {
           email: 'asdf@example.com',
@@ -83,10 +83,6 @@ describe('main.js', () => {
       }
     }).$mount()
 
-    /*expect(vm.$el.querySelector('#part1').textContent).toBe('Thanks for signing up! Confirm ')
-    expect(vm.$el.querySelector('#part2').textContent).toBe('asdf@example.com is correct')
-    expect(vm.$el.querySelector('#part3').textContent).toBe(' to continue to the site')*/
-
     expect(vm.$el.querySelector('#part1').textContent).toBe('Gracias por registrarte! Confirmar ')
     expect(vm.$el.querySelector('#part2').textContent).toBe('asdf@example.com es correcta')
     expect(vm.$el.querySelector('#part3').textContent).toBe(' para continuar al sitio')
@@ -94,7 +90,7 @@ describe('main.js', () => {
 
   it('will use the v-trans directive to translate an HTML element\'s children2', () => {
     let vm = new Vue({
-      template: '<div v-trans="$root.locale" key="Thanks for signing up! Confirm |{email} is correct| to continue to the site" :replace="{ email: email }"><span id="part1">Please perform </span><a id="part2" href="#">this {value} action</a><span id="part3"> to complete the thing</span></div>',
+      template: '<div v-locale="$root.locale" key="Thanks for signing up! Confirm |{email} is correct| to continue to the site" :replace="{ email: email }"><b id="part1"></b><a id="part2" href="#"></a><span id="part3"></span></div>',
       data: function () {
         return {
           email: 'asdf@example.com',
