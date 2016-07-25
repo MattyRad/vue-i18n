@@ -68,7 +68,7 @@ And then the translations will be reactive to changes in the `locale` value.
 You can select a specific locale by passing in the locale param
 
 ```html
-<h1>{{ 'Hello world' | translate { locale: 'es' } }}</h1>
+<h1>{{ $t('Hello world', { locale: 'es' }) }}</h1>
 ```
 
 ## Fallback locales
@@ -105,7 +105,7 @@ __Don't__ do this
 
 __Do this__
 ```html
-<p>{{ 'You have used {count} out of {limit}' | translate {count, limit} }}</p> <!-- note ES6 syntax -->
+<p>{{ $t('You have used {count} out of {limit}', {count, limit}) }}</p>
 ```
 
 ```javascript
@@ -134,7 +134,9 @@ __Don't__ do this
 __Do this__
 ```html
 <div v-locale="$root.locale" key="Please perform |this action| to complete the thing">
-    <span></span><a href="#" @click.prevent="action')"></a><span></span>
+    <span></span>
+    <a href="#" @click.prevent="action"></a>
+    <span></span>
 </div>
 ```
 ```javascript
@@ -146,7 +148,9 @@ __Do this__
 ## All Together Now!
 ```html
 <div v-locale="$root.locale" key="Thanks for signing up! Confirm |{email} is correct| to continue to the site." :replace="{ email: email }">
-    <span></span><a href="#" @click="confirm"></a><span></span>
+    <span></span>
+    <a href="#" @click="confirm"></a>
+    <span></span>
 </div>
 ```
 
