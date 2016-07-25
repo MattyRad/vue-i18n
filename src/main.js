@@ -53,7 +53,7 @@ module.exports = {
         }
 
         if (window.console) {
-          console.warn(`Translations exist for the locale ${currentLocale}, but there is not an entry for '${key}'`)
+          console.warn(`[vue-i18n] Translations exist for the locale ${currentLocale}, but there is not an entry for '${key}'`)
         }
       }
 

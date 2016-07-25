@@ -49,6 +49,13 @@ describe('main.js', () => {
     expect(vm.$t('Goodbye')).toBe('Au Revoir')
   })
 
+  it('will use a specific locale if one is specified', () => {
+    let vm = new Vue
+
+    vm.$root.locale = 'es'
+    expect(vm.$t('Hello', {locale: 'fr'})).toBe('Bonjour')
+  })
+
   it('will replace vars supplied as a second param', () => {
     let vm = new Vue
 
@@ -71,24 +78,31 @@ describe('main.js', () => {
     expect(vm.$t('You have used {count} out of {limit}', {count, limit})).toBe('Vous avez utilisé 10 sur 100')
   })
 
+  it('will log a warning when translations for a locale are provided, but a key is not found', () => {
+    console.warn = jasmine.createSpy("warn")
 
-  it('will use the v-trans directive to translate an HTML element\'s children', () => {
-    let vm = new Vue({
-      template: '<div v-locale="$root.locale" key="Thanks for signing up! Confirm |{email} is correct| to continue to the site" :replace="{ email: email }"><b id="part1"></b><a id="part2" href="#"></a><span id="part3"></span></div>',
-      data: function () {
-        return {
-          email: 'asdf@example.com',
-          locale: 'es'
-        }
-      }
-    }).$mount()
+    const vm = new Vue()
 
-    expect(vm.$el.querySelector('#part1').textContent).toBe('Gracias por registrarte! Confirmar ')
-    expect(vm.$el.querySelector('#part2').textContent).toBe('asdf@example.com es correcta')
-    expect(vm.$el.querySelector('#part3').textContent).toBe(' para continuar al sitio')
+    let currentLocale = 'es'
+    let key = 'This key does not exist'
+
+    vm.$root.locale = currentLocale
+    vm.$t(key)
+
+    expect(console.warn).toHaveBeenCalledWith(`[vue-i18n] Translations exist for the locale ${currentLocale}, but there is not an entry for '${key}'`)
   })
 
-  it('will use the v-trans directive to translate an HTML element\'s children2', () => {
+  // v-locale Directive
+
+  it('creates the v-locale directive', () => {
+    let vm = new Vue({
+      template: '<div></div>',
+    }).$mount()
+
+    expect(typeof vm.$options.directives['locale']).toEqual('object')
+  })
+
+  it('will use the v-trans directive to translate an HTML element\'s children', () => {
     let vm = new Vue({
       template: '<div v-locale="$root.locale" key="Thanks for signing up! Confirm |{email} is correct| to continue to the site" :replace="{ email: email }"><b id="part1"></b><a id="part2" href="#"></a><span id="part3"></span></div>',
       data: function () {
@@ -99,9 +113,19 @@ describe('main.js', () => {
       }
     }).$mount()
 
-    expect(vm.$el.querySelector('#part1').textContent).toBe('Thanks for signing up! Confirm ')
-    expect(vm.$el.querySelector('#part2').textContent).toBe('asdf@example.com is correct')
-    expect(vm.$el.querySelector('#part3').textContent).toBe(' to continue to the site')
+    vm.$root.locale = 'en';
+    vm.$nextTick(() => {
+      expect(vm.$el.querySelector('#part1').textContent).toBe('Thanks for signing up! Confirm ')
+      expect(vm.$el.querySelector('#part2').textContent).toBe('asdf@example.com is correct')
+      expect(vm.$el.querySelector('#part3').textContent).toBe(' to continue to the site')
+    })
+
+    vm.$root.locale = 'es';
+    vm.$nextTick(() => {
+      expect(vm.$el.querySelector('#part1').textContent).toBe('Gracias por registrarte! Confirmar ')
+      expect(vm.$el.querySelector('#part2').textContent).toBe('asdf@example.com es correcta')
+      expect(vm.$el.querySelector('#part3').textContent).toBe(' para continuar al sitio')
+    })
   })
 
 })
