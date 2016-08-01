@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import Main from '../../src/main'
 
-Vue.use(Main, {
+const translations = {
   'es': {
     'Hello': 'Hola',
     'Goodbye': 'Adiós',
@@ -16,7 +16,9 @@ Vue.use(Main, {
   'fr_CA': {
     'Hello': 'Bonjour, du Canada'
   }
-})
+}
+
+Vue.use(Main, translations)
 
 describe('main.js', () => {
 
@@ -89,20 +91,18 @@ describe('main.js', () => {
     vm.$root.locale = currentLocale
     vm.$t(key)
 
-    expect(console.warn).toHaveBeenCalledWith(`[vue-i18n] Translations exist for the locale ${currentLocale}, but there is not an entry for '${key}'`)
+    expect(console.warn).toHaveBeenCalledWith(`[vue-i18n] Translations exist for the locale '${currentLocale}', but there is not an entry for '${key}'`)
   })
 
   // v-locale Directive
 
   it('creates the v-locale directive', () => {
-    let vm = new Vue({
-      template: '<div></div>',
-    }).$mount()
+    let vm = new Vue()
 
     expect(typeof vm.$options.directives['locale']).toEqual('object')
   })
 
-  it('will use the v-trans directive to translate an HTML element\'s children', () => {
+  it('will use the v-trans directive to translate an element\'s children', () => {
     let vm = new Vue({
       template: '<div v-locale="$root.locale" key="Thanks for signing up! Confirm |{email} is correct| to continue to the site" :replace="{ email: email }"><b id="part1"></b><a id="part2" href="#"></a><span id="part3"></span></div>',
       data: function () {
