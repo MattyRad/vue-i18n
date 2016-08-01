@@ -26,7 +26,7 @@ Cons:
 import Vue from 'vue'
 import i18n from 'voo-i18n'
 
-let translations = {
+const translations = {
 	'es': {
 		'Hello world': 'Hola Mundo'
 	},
@@ -120,7 +120,7 @@ It's often the case that your sentences will not form nice little compartmentali
 
 __Don't__ do this
 ```html
-    <p>{{ 'Please perform' | translate }} <a href="#">{{ 'this action' | translate }}</a> {{ 'to complete the thing' | translate }}</p>
+    <p>{{ 'Please perform' | translate }} <a href="#" @click.prevent="action">{{ 'this action' | translate }}</a> {{ 'to complete the thing' | translate }}</p>
 ```
 
 ```javascript
@@ -133,11 +133,11 @@ __Don't__ do this
 
 __Do this__
 ```html
-<div v-locale="$root.locale" key="Please perform |this action| to complete the thing">
+<p v-locale="$root.locale" key="Please perform |this action| to complete the thing">
     <span></span>
     <a href="#" @click.prevent="action"></a>
     <span></span>
-</div>
+</p>
 ```
 ```javascript
 'es': {

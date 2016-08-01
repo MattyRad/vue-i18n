@@ -1,67 +1,37 @@
+import { replace } from './format'
+import { set, fetch } from './translations'
+
 module.exports = {
-  install: function (Vue, locale_translations) {
+  install: function (Vue, translations = {}) {
 
-    Vue.locale_translations = locale_translations;
-
-    Vue.replace_vars = function (translation, vars) {
-      let replaced = translation;
-
-      for (var key in vars) {
-        replaced = replaced.replace(`{${key}}`, vars[key]);
-      }
-
-      return replaced;
-    }
+    set(translations);
 
     Vue.directive('locale', {
       params: ['key', 'replace'],
 
       update: function (locale) {
-        let translation = this.vm.$t(this.params.key, this.params.replace || {});
+        var translated_substrings = this.vm.$t(this.params.key, this.params.replace).split('|');
 
-        let initial_substrings = this.params.key.split('|');
-        let translated_substrings = translation.split('|');
+        var children = this.el.children;
 
-        let children = this.el.children;
-
-        for (let i = 0; i < children.length; i++) {
-          if (! translated_substrings[i]) { continue }
-
-          children[i].innerText = translated_substrings[i];
-        }
-      }
-    });
-
-    Vue.prototype.$t = function (key, vars) {
-      var currentLocale = (vars && vars['locale']) ? vars['locale'] : this.$root.locale
-      var translations = Vue.locale_translations[currentLocale]
-
-      if (translations) {
-        if (key in translations) {
-          return Vue.replace_vars(translations[key], vars);
-        }
-
-        // Also fall back to a sublocale, e.g. "fr" translations from the locale "fr_CA"
-        if (currentLocale && (currentLocale.indexOf('_') > -1)) {
-          var sublocale = currentLocale.slice(0, 2)
-
-          translations = locale_translations[sublocale]
-
-          if (translations && (key in translations)) {
-            return Vue.replace_vars(translations[key], vars);
+        for (var i = 0; i < children.length; i++) {
+          if (translated_substrings[i]) {
+            children[i].innerText = translated_substrings[i];
           }
         }
-
-        if (window.console) {
-          console.warn(`[vue-i18n] Translations exist for the locale ${currentLocale}, but there is not an entry for '${key}'`)
-        }
       }
+    })
 
-      return Vue.replace_vars(key, vars)
+    Vue.prototype.$t = function (key, replacements = {}) {
+      var locale = replacements['locale'] || this.$root.locale
+
+      var translation = fetch(locale, key)
+
+      return replace(translation, replacements)
     }
 
-    Vue.filter('translate', function (key, vars) {
-      return this.$t(key, vars)
+    Vue.filter('translate', function (key, replacements = {}) {
+      return this.$t(key, replacements)
     })
   }
 }
