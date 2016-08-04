@@ -61,23 +61,23 @@ describe('main.js', () => {
   it('will replace vars supplied as a second param', () => {
     let vm = new Vue
 
-    let count = 10, limit = 100
+    let count = 0, limit = 100
 
     expect(vm.$t('You have used {count} out of {limit}')).toBe('You have used {count} out of {limit}')
 
-    expect(vm.$t('You have used {count} out of {limit}', {count, limit})).toBe('You have used 10 out of 100')
+    expect(vm.$t('You have used {count} out of {limit}', {count, limit})).toBe('You have used 0 out of 100')
 
     vm.$root.locale = 'es'
     expect(vm.$t('You have used {count} out of {limit}')).toBe('Ha utilizado {count} de los {limit}')
-    expect(vm.$t('You have used {count} out of {limit}', {count, limit})).toBe('Ha utilizado 10 de los 100')
+    expect(vm.$t('You have used {count} out of {limit}', {count, limit})).toBe('Ha utilizado 0 de los 100')
 
     vm.$root.locale = 'fr'
     expect(vm.$t('You have used {count} out of {limit}')).toBe('Vous avez utilisé {count} sur {limit}')
-    expect(vm.$t('You have used {count} out of {limit}', {count, limit})).toBe('Vous avez utilisé 10 sur 100')
+    expect(vm.$t('You have used {count} out of {limit}', {count, limit})).toBe('Vous avez utilisé 0 sur 100')
 
     vm.$root.locale = 'fr_CA'
     expect(vm.$t('You have used {count} out of {limit}')).toBe('Vous avez utilisé {count} sur {limit}')
-    expect(vm.$t('You have used {count} out of {limit}', {count, limit})).toBe('Vous avez utilisé 10 sur 100')
+    expect(vm.$t('You have used {count} out of {limit}', {count, limit})).toBe('Vous avez utilisé 0 sur 100')
   })
 
   it('will log a warning when translations for a locale are provided, but a key is not found', () => {
@@ -102,9 +102,15 @@ describe('main.js', () => {
     expect(typeof vm.$options.directives['locale']).toEqual('object')
   })
 
-  it('will use the v-trans directive to translate an element\'s children', () => {
+  it('will use the v-locale directive to translate an element\'s children', () => {
     let vm = new Vue({
-      template: '<div v-locale="$root.locale" key="Thanks for signing up! Confirm |{email} is correct| to continue to the site" :replace="{ email: email }"><b id="part1"></b><a id="part2" href="#"></a><span id="part3"></span></div>',
+      template: `
+        <div v-locale="$root.locale" key="Thanks for signing up! Confirm |{email} is correct| to continue to the site" :replace="{ email: email }">
+          <b id="part1"></b>
+          <a id="part2" href="#"></a>
+          <i id="part3"></i>
+        </div>
+      `,
       data: function () {
         return {
           email: 'asdf@example.com',
