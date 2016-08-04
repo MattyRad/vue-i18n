@@ -144,6 +144,9 @@ __Do this__
 	'Please perform |this action| to complete the thing': 'Por favor, realice |esta acción| para completar la cosa'
 },
 ```
+###### Important:
+
+The directive element only expects to have children 1 level deep. So `<span v-locale="es" key="a|b"><a><b></b></a></span>` will incorrectly render as `<span><a>a</a></span>`. I haven't found an elegant solution around this yet. The main goal of this repo is to retain lingual context in translations and logical context in components, so it's an acceptable sacrifice for the time being, but if you have a solution please notify me.
 
 ## All Together Now!
 ```html
