@@ -15,6 +15,9 @@ const translations = {
   },
   'fr_CA': {
     'Hello': 'Bonjour, du Canada'
+  },
+  'fr-CA': {
+    'Hello': 'Bonjour, du Canada'
   }
 }
 
@@ -48,6 +51,14 @@ describe('main.js', () => {
 
     vm.$root.locale = 'fr_CA'
     expect(vm.$t('Hello')).toBe('Bonjour, du Canada')
+    expect(vm.$t('Goodbye')).toBe('Au Revoir')
+
+    vm.$root.locale = 'fr-CA'
+    expect(vm.$t('Hello')).toBe('Bonjour, du Canada')
+    expect(vm.$t('Goodbye')).toBe('Au Revoir')
+
+    vm.$root.locale = 'fr_DNE'
+    expect(vm.$t('Hello')).toBe('Bonjour')
     expect(vm.$t('Goodbye')).toBe('Au Revoir')
   })
 

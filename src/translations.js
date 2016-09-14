@@ -16,22 +16,28 @@ export var set = function (translations) {
 }
 
 export var fetch = function (locale, key) {
+  if (! locale) return key;
+
   var translations = locale_translations[locale]
 
-  if (translations) {
-    if (key in translations) {
-      return translations[key];
-    }
+  if (translations && key in translations) {
+    return translations[key];
+  }
 
-    if (locale.indexOf('_') > -1) {
-      return fetch(locale.slice(0, 2), key)
-    }
+  // key not found, fall back from dialect translations
 
-    // key not found
+  if (locale.indexOf('_') > -1) {
+    return fetch(locale.substr(0, locale.indexOf('_')), key)
+  }
 
-    if (window.console) {
-      console.warn(`[vue-i18n] Translations exist for the locale '${locale}', but there is not an entry for '${key}'`)
-    }
+  if (locale.indexOf('-') > -1) {
+    return fetch(locale.substr(0, locale.indexOf('-')), key)
+  }
+
+  // key does not exist
+
+  if (translations && window.console) {
+    console.warn(`[vue-i18n] Translations exist for the locale '${locale}', but there is not an entry for '${key}'`)
   }
 
   return key
