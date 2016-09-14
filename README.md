@@ -63,9 +63,9 @@ Set a default locale in the __root__ data of your application.
 
 And then the translations will be reactive to changes in the `locale` value.
 
-## Specific locale
+## Override locale
 
-You can select a specific locale by passing in the locale param
+You can override the root locale by passing in the locale param
 
 ```html
 <h1>{{ $t('Hello world', { locale: 'es' }) }}</h1>
@@ -87,7 +87,7 @@ export default {
 }
 ```
 
-When the locale is set to `fr_CA`, `{{ 'Goodbye' | translate }}` still translates to `'Au Revoir'`.
+When the locale is set to `fr_CA`, `{{ 'Goodbye' | translate }}` still translates to `'Au Revoir'`. You can also use a hyphen instead of an underscore if you prefer: `fr-CA`.
 
 ## Variable arguments
 
@@ -120,20 +120,20 @@ It's often the case that your sentences will not form nice little compartmentali
 
 __Don't__ do this
 ```html
-    <p>{{ 'Please perform' | translate }} <a href="#" @click.prevent="action">{{ 'this action' | translate }}</a> {{ 'to complete the thing' | translate }}</p>
+    <p>{{ 'Please perform' | translate }} <a href="#" @click.prevent="action">{{ 'this action' | translate }}</a> {{ 'to complete the task' | translate }}</p>
 ```
 
 ```javascript
 'es': {
 	'Please perform': 'Por favor, realice',
 	'this action': 'esta acción',
-	'to complete the thing': 'para completar la cosa'
+	'to complete the task': 'para completar la tarea'
 },
 ```
 
 __Do this__
 ```html
-<p v-locale="$root.locale" key="Please perform |this action| to complete the thing">
+<p v-locale="$root.locale" key="Please perform |this action| to complete the task">
     <span></span>
     <a href="#" @click.prevent="action"></a>
     <span></span>
@@ -141,7 +141,7 @@ __Do this__
 ```
 ```javascript
 'es': {
-	'Please perform |this action| to complete the thing': 'Por favor, realice |esta acción| para completar la cosa'
+	'Please perform |this action| to complete the task': 'Por favor, realice |esta acción| para completar la tarea'
 },
 ```
 ###### Important:
@@ -162,8 +162,3 @@ The directive element only expects to have children 1 level deep. So `<span v-lo
 	'Thanks for signing up! Confirm |{email} is correct| to continue to the site': 'Gracias por registrarte! Confirmar |{email} es correcta| para continuar al sitio'
 },
 ```
-
-
-
-
-
