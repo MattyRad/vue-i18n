@@ -1,7 +1,7 @@
 import { replace } from './format'
 import { set, fetch } from './translations'
 
-module.exports = {
+export default {
   install: function (Vue, translations = {}) {
 
     set(translations);
