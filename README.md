@@ -6,9 +6,11 @@ In short `{{ $t('Hello world') }}` instead of `{{ $t('messages.hello_world') }}`
 
 Better yet: `{{ 'Hello world' | translate }}`
 
+[See a rough demo](https://jsfiddle.net/83o3db0q/7/)
+
 ## Compatibility
 
-Designed for Vue 1, currently does not support Vue 2 [See a rough demo](https://jsfiddle.net/83o3db0q/6/).
+Designed for Vue 1, currently does not support Vue 2.
 
 ## Installation
 
