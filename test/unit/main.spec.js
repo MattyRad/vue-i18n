@@ -91,7 +91,9 @@ describe('main.js', () => {
     expect(vm.$t('You have used {count} out of {limit}', {count, limit})).toBe('Vous avez utilisé 0 sur 100')
   })
 
-  it('will log a warning when translations for a locale are provided, but a key is not found', () => {
+  it('will log a warning in debug mode when translations for a locale are provided, but a key is not found', () => {
+    Vue.config.debug = true
+
     console.warn = jasmine.createSpy("warn")
 
     const vm = new Vue()
@@ -103,6 +105,22 @@ describe('main.js', () => {
     vm.$t(key)
 
     expect(console.warn).toHaveBeenCalledWith(`[vue-i18n] Translations exist for the locale '${currentLocale}', but there is not an entry for '${key}'`)
+  })
+
+  it('will not log a warning when debug mode is off and translations for a locale are provided, but a key is not found', () => {
+    Vue.config.debug = false
+
+    console.warn = jasmine.createSpy("warn")
+
+    const vm = new Vue()
+
+    let currentLocale = 'es'
+    let key = 'This key does not exist'
+
+    vm.$root.locale = currentLocale
+    vm.$t(key)
+
+    expect(console.warn).not.toHaveBeenCalled()
   })
 
   // v-locale Directive
