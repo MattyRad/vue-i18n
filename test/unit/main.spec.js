@@ -1,4 +1,4 @@
-import Vue from 'vue'
+import Vue from 'vue/dist/vue.js'
 import Main from '../../src/main'
 
 const translations = {
@@ -26,51 +26,61 @@ Vue.use(Main, translations)
 describe('main.js', () => {
 
   it('will simply return the original string if no translation is found', () => {
-    let vm = new Vue
+    let vm = new Vue({
+      locale: 'en'
+    })
 
     expect(vm.$t('Hello world')).toBe('Hello world')
 
-    vm.$root.locale = 'DNE'
+    vm.setLocale('DNE')
     expect(vm.$t('Hello world')).toBe('Hello world')
   })
 
   it('will return the translation', () => {
-    let vm = new Vue
+    let vm = new Vue({
+      locale: 'en'
+    })
 
-    vm.$root.locale = 'es'
+    vm.setLocale('es')
     expect(vm.$t('Hello')).toBe('Hola')
     expect(vm.$t('Goodbye')).toBe('Adiós')
 
-    vm.$root.locale = 'fr'
+    vm.setLocale('fr')
     expect(vm.$t('Hello')).toBe('Bonjour')
     expect(vm.$t('Goodbye')).toBe('Au Revoir')
   })
 
   it('will use the dialect translations, and fall back to base translations when not specified', () => {
-    let vm = new Vue
+    let vm = new Vue({
+      locale: 'en'
+    })
 
-    vm.$root.locale = 'fr_CA'
+    vm.setLocale('fr_CA')
     expect(vm.$t('Hello')).toBe('Bonjour, du Canada')
     expect(vm.$t('Goodbye')).toBe('Au Revoir')
 
-    vm.$root.locale = 'fr-CA'
+    vm.setLocale('fr-CA')
     expect(vm.$t('Hello')).toBe('Bonjour, du Canada')
     expect(vm.$t('Goodbye')).toBe('Au Revoir')
 
-    vm.$root.locale = 'fr_DNE'
+    vm.setLocale('fr_DNE')
     expect(vm.$t('Hello')).toBe('Bonjour')
     expect(vm.$t('Goodbye')).toBe('Au Revoir')
   })
 
   it('will use a specific locale if one is specified', () => {
-    let vm = new Vue
+    let vm = new Vue({
+      locale: 'en'
+    })
 
-    vm.$root.locale = 'es'
+    vm.setLocale('es')
     expect(vm.$t('Hello', {locale: 'fr'})).toBe('Bonjour')
   })
 
   it('will replace vars supplied as a second param', () => {
-    let vm = new Vue
+    let vm = new Vue({
+      locale: 'en'
+    })
 
     let count = 0, limit = 100
 
@@ -78,63 +88,92 @@ describe('main.js', () => {
 
     expect(vm.$t('You have used {count} out of {limit}', {count, limit})).toBe('You have used 0 out of 100')
 
-    vm.$root.locale = 'es'
+    vm.setLocale('es')
     expect(vm.$t('You have used {count} out of {limit}')).toBe('Ha utilizado {count} de los {limit}')
     expect(vm.$t('You have used {count} out of {limit}', {count, limit})).toBe('Ha utilizado 0 de los 100')
 
-    vm.$root.locale = 'fr'
+    vm.setLocale('fr')
     expect(vm.$t('You have used {count} out of {limit}')).toBe('Vous avez utilisé {count} sur {limit}')
     expect(vm.$t('You have used {count} out of {limit}', {count, limit})).toBe('Vous avez utilisé 0 sur 100')
 
-    vm.$root.locale = 'fr_CA'
+    vm.setLocale('fr_CA')
     expect(vm.$t('You have used {count} out of {limit}')).toBe('Vous avez utilisé {count} sur {limit}')
     expect(vm.$t('You have used {count} out of {limit}', {count, limit})).toBe('Vous avez utilisé 0 sur 100')
   })
 
-  it('will log a warning in debug mode when translations for a locale are provided, but a key is not found', () => {
-    Vue.config.debug = true
+  it('will log a warning in when not in production and when translations for a locale are provided, but a key is not found', () => {
+    process.env.NODE_ENV = 'not-production'
 
     console.warn = jasmine.createSpy("warn")
 
-    const vm = new Vue()
+    const vm = new Vue({
+      locale: 'en'
+    })
 
     let currentLocale = 'es'
     let key = 'This key does not exist'
 
-    vm.$root.locale = currentLocale
+    vm.setLocale(currentLocale)
     vm.$t(key)
 
     expect(console.warn).toHaveBeenCalledWith(`[vue-i18n] Translations exist for the locale '${currentLocale}', but there is not an entry for '${key}'`)
   })
 
-  it('will not log a warning when debug mode is off and translations for a locale are provided, but a key is not found', () => {
-    Vue.config.debug = false
+  it('will not log a warning when in production and translations for a locale are provided, but a key is not found', () => {
+    process.env.NODE_ENV = 'production'
 
     console.warn = jasmine.createSpy("warn")
 
-    const vm = new Vue()
+    const vm = new Vue({
+      locale: 'en'
+    })
 
     let currentLocale = 'es'
     let key = 'This key does not exist'
 
-    vm.$root.locale = currentLocale
+    vm.setLocale(currentLocale)
     vm.$t(key)
 
     expect(console.warn).not.toHaveBeenCalled()
   })
 
+  // filter
+
+  it('will correctly render results using the translate filter', (done) => {
+    const Ctor = Vue.extend({
+      template: `
+        <p>{{ 'Hello' | translate }}</p>
+      `
+    })
+
+    const vm = new Ctor({
+      locale: 'en'
+    }).$mount()
+
+    vm.setLocale('es')
+
+    vm.$nextTick(() => {
+      expect(vm.$el.textContent).toBe('Hola')
+      done()
+    })
+  })
+
   // v-locale Directive
 
   it('creates the v-locale directive', () => {
-    let vm = new Vue()
+    let vm = new Vue({
+      locale: 'en'
+    })
 
     expect(typeof vm.$options.directives['locale']).toEqual('object')
   })
 
-  it('will use the v-locale directive to translate an element\'s children', () => {
+  it('will use the v-locale directive to inject text into an element\'s children', (done) => {
     let vm = new Vue({
+      locale: 'en',
+
       template: `
-        <div v-locale="$root.locale" key="Thanks for signing up! Confirm |{email} is correct| to continue to the site" :replace="{ email: email }">
+        <div v-locale="locale" key="Thanks for signing up! Confirm |{email} is correct| to continue to the site" :replace="{ email: email }">
           <b id="part1"></b>
           <a id="part2" href="#"></a>
           <i id="part3"></i>
@@ -142,24 +181,44 @@ describe('main.js', () => {
       `,
       data: function () {
         return {
-          email: 'asdf@example.com',
-          locale: 'en'
+          email: 'asdf@example.com'
         }
       }
     }).$mount()
 
-    vm.$root.locale = 'en';
+    vm.setLocale('en')
     vm.$nextTick(() => {
       expect(vm.$el.querySelector('#part1').textContent).toBe('Thanks for signing up! Confirm ')
       expect(vm.$el.querySelector('#part2').textContent).toBe('asdf@example.com is correct')
       expect(vm.$el.querySelector('#part3').textContent).toBe(' to continue to the site')
+      done()
     })
+  })
 
-    vm.$root.locale = 'es';
+  it('will use the v-locale directive to translate an element\'s children', (done) => {
+    let vm = new Vue({
+      locale: 'en',
+
+      template: `
+        <div v-locale="locale" key="Thanks for signing up! Confirm |{email} is correct| to continue to the site" :replace="{ email: email }">
+          <b id="part1"></b>
+          <a id="part2" href="#"></a>
+          <i id="part3"></i>
+        </div>
+      `,
+      data: function () {
+        return {
+          email: 'asdf@example.com'
+        }
+      }
+    }).$mount()
+
+    vm.setLocale('es')
     vm.$nextTick(() => {
       expect(vm.$el.querySelector('#part1').textContent).toBe('Gracias por registrarte! Confirmar ')
       expect(vm.$el.querySelector('#part2').textContent).toBe('asdf@example.com es correcta')
       expect(vm.$el.querySelector('#part3').textContent).toBe(' para continuar al sitio')
+      done()
     })
   })
 

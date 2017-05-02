@@ -38,7 +38,7 @@ export var fetch = function (locale, key) {
 
   // key does not exist
 
-  if (translations && window.console && Vue.config.debug) {
+  if (translations && window.console && process && process.env && process.env.NODE_ENV !== 'production') {
     console.warn(`[vue-i18n] Translations exist for the locale '${locale}', but there is not an entry for '${key}'`)
   }
 

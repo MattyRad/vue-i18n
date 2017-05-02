@@ -1,37 +1,59 @@
 import { replace } from './format'
-import { set, fetch } from './translations'
+import { set as setTranslations, fetch as fetchTranslation } from './translations'
+
+const data = {
+  locale: undefined
+}
+
+const translate = function (key, replacements = {}) {
+  let locale = replacements['locale'] || data.locale
+
+  let translation = fetchTranslation(locale, key)
+
+  return replace(translation, replacements)
+}
 
 export default {
-  install: function (Vue, translations = {}) {
+  install(Vue, translations = {}) {
 
-    set(translations);
+    setTranslations(translations);
 
-    Vue.directive('locale', {
-      params: ['key', 'replace'],
+    Vue.mixin({
+      data() {
+        return data
+      },
+      created() {
+        data.locale = this.$options.locale
+      },
+      methods: {
+        $t: translate,
+        setLocale(label) {
+          data.locale = label
+        }
+      },
 
-      update: function (locale) {
-        var translated_substrings = this.vm.$t(this.params.key, this.params.replace).split('|');
+      filters: {
+        translate
+      },
 
-        var children = this.el.children;
+      directives: {
+        locale: {
+          params: ['key', 'replace'],
 
-        for (var i = 0; i < children.length; i++) {
-          if (translated_substrings[i]) {
-            children[i].innerText = translated_substrings[i];
+          update(locale) {
+            var translated_substrings = this.vm.$t(this.params.key, this.params.replace).split('|');
+
+            var children = this.el.children;
+
+            for (var i = 0; i < children.length; i++) {
+              if (translated_substrings[i]) {
+                children[i].innerText = translated_substrings[i];
+              }
+            }
           }
         }
       }
     })
 
-    Vue.prototype.$t = function (key, replacements = {}) {
-      var locale = replacements['locale'] || this.$root.locale
-
-      var translation = fetch(locale, key)
-
-      return replace(translation, replacements)
-    }
-
-    Vue.filter('translate', function (key, replacements = {}) {
-      return this.$t(key, replacements)
-    })
   }
 }
