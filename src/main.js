@@ -14,46 +14,39 @@ const translate = function (key, replacements = {}) {
 }
 
 export default {
-  install(Vue, translations = {}) {
+  install(Vue, options = {}) {
 
-    setTranslations(translations);
+    setTranslations(options.translations);
+
+    Vue.prototype.$t = translate
+    Vue.prototype.$setLocale = function (label) {
+      data.locale = label
+    }
+
+    Vue.filter('translate', translate)
+
+    Vue.directive('locale', function (el, binding, vnode) {
+      var translated_substrings = vnode.context.$t(binding.value.tra, binding.value.replace).split('|');
+
+      var children = el.children;
+
+      for (var i = 0; i < children.length; i++) {
+        if (translated_substrings[i]) {
+          children[i].innerText = translated_substrings[i];
+        }
+      }
+    })
 
     Vue.mixin({
       data() {
         return data
       },
-      created() {
-        data.locale = this.$options.locale
-      },
-      methods: {
-        $t: translate,
-        setLocale(label) {
-          data.locale = label
-        }
-      },
 
-      filters: {
-        translate
-      },
-
-      directives: {
-        locale: {
-          params: ['key', 'replace'],
-
-          update(locale) {
-            var translated_substrings = this.vm.$t(this.params.key, this.params.replace).split('|');
-
-            var children = this.el.children;
-
-            for (var i = 0; i < children.length; i++) {
-              if (translated_substrings[i]) {
-                children[i].innerText = translated_substrings[i];
-              }
-            }
-          }
+      beforeCreate() {
+        if (this.$options.locale !== undefined) {
+          data.locale = this.$options.locale
         }
       }
     })
-
   }
 }

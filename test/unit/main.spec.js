@@ -21,7 +21,7 @@ const translations = {
   }
 }
 
-Vue.use(Main, translations)
+Vue.use(Main, {translations})
 
 describe('main.js', () => {
 
@@ -32,7 +32,7 @@ describe('main.js', () => {
 
     expect(vm.$t('Hello world')).toBe('Hello world')
 
-    vm.setLocale('DNE')
+    vm.$setLocale('DNE')
     expect(vm.$t('Hello world')).toBe('Hello world')
   })
 
@@ -41,11 +41,11 @@ describe('main.js', () => {
       locale: 'en'
     })
 
-    vm.setLocale('es')
+    vm.$setLocale('es')
     expect(vm.$t('Hello')).toBe('Hola')
     expect(vm.$t('Goodbye')).toBe('Adiós')
 
-    vm.setLocale('fr')
+    vm.$setLocale('fr')
     expect(vm.$t('Hello')).toBe('Bonjour')
     expect(vm.$t('Goodbye')).toBe('Au Revoir')
   })
@@ -55,15 +55,15 @@ describe('main.js', () => {
       locale: 'en'
     })
 
-    vm.setLocale('fr_CA')
+    vm.$setLocale('fr_CA')
     expect(vm.$t('Hello')).toBe('Bonjour, du Canada')
     expect(vm.$t('Goodbye')).toBe('Au Revoir')
 
-    vm.setLocale('fr-CA')
+    vm.$setLocale('fr-CA')
     expect(vm.$t('Hello')).toBe('Bonjour, du Canada')
     expect(vm.$t('Goodbye')).toBe('Au Revoir')
 
-    vm.setLocale('fr_DNE')
+    vm.$setLocale('fr_DNE')
     expect(vm.$t('Hello')).toBe('Bonjour')
     expect(vm.$t('Goodbye')).toBe('Au Revoir')
   })
@@ -73,7 +73,7 @@ describe('main.js', () => {
       locale: 'en'
     })
 
-    vm.setLocale('es')
+    vm.$setLocale('es')
     expect(vm.$t('Hello', {locale: 'fr'})).toBe('Bonjour')
   })
 
@@ -88,15 +88,15 @@ describe('main.js', () => {
 
     expect(vm.$t('You have used {count} out of {limit}', {count, limit})).toBe('You have used 0 out of 100')
 
-    vm.setLocale('es')
+    vm.$setLocale('es')
     expect(vm.$t('You have used {count} out of {limit}')).toBe('Ha utilizado {count} de los {limit}')
     expect(vm.$t('You have used {count} out of {limit}', {count, limit})).toBe('Ha utilizado 0 de los 100')
 
-    vm.setLocale('fr')
+    vm.$setLocale('fr')
     expect(vm.$t('You have used {count} out of {limit}')).toBe('Vous avez utilisé {count} sur {limit}')
     expect(vm.$t('You have used {count} out of {limit}', {count, limit})).toBe('Vous avez utilisé 0 sur 100')
 
-    vm.setLocale('fr_CA')
+    vm.$setLocale('fr_CA')
     expect(vm.$t('You have used {count} out of {limit}')).toBe('Vous avez utilisé {count} sur {limit}')
     expect(vm.$t('You have used {count} out of {limit}', {count, limit})).toBe('Vous avez utilisé 0 sur 100')
   })
@@ -113,7 +113,7 @@ describe('main.js', () => {
     let currentLocale = 'es'
     let key = 'This key does not exist'
 
-    vm.setLocale(currentLocale)
+    vm.$setLocale(currentLocale)
     vm.$t(key)
 
     expect(console.warn).toHaveBeenCalledWith(`[vue-i18n] Translations exist for the locale '${currentLocale}', but there is not an entry for '${key}'`)
@@ -131,7 +131,7 @@ describe('main.js', () => {
     let currentLocale = 'es'
     let key = 'This key does not exist'
 
-    vm.setLocale(currentLocale)
+    vm.$setLocale(currentLocale)
     vm.$t(key)
 
     expect(console.warn).not.toHaveBeenCalled()
@@ -150,7 +150,7 @@ describe('main.js', () => {
       locale: 'en'
     }).$mount()
 
-    vm.setLocale('es')
+    vm.$setLocale('es')
 
     vm.$nextTick(() => {
       expect(vm.$el.textContent).toBe('Hola')
@@ -173,7 +173,7 @@ describe('main.js', () => {
       locale: 'en',
 
       template: `
-        <div v-locale="locale" key="Thanks for signing up! Confirm |{email} is correct| to continue to the site" :replace="{ email: email }">
+        <div v-locale="{ locale: locale, tra: 'Thanks for signing up! Confirm |{email} is correct| to continue to the site', replace: { email: email } }">
           <b id="part1"></b>
           <a id="part2" href="#"></a>
           <i id="part3"></i>
@@ -186,7 +186,7 @@ describe('main.js', () => {
       }
     }).$mount()
 
-    vm.setLocale('en')
+    vm.$setLocale('en')
     vm.$nextTick(() => {
       expect(vm.$el.querySelector('#part1').textContent).toBe('Thanks for signing up! Confirm ')
       expect(vm.$el.querySelector('#part2').textContent).toBe('asdf@example.com is correct')
@@ -200,7 +200,7 @@ describe('main.js', () => {
       locale: 'en',
 
       template: `
-        <div v-locale="locale" key="Thanks for signing up! Confirm |{email} is correct| to continue to the site" :replace="{ email: email }">
+        <div v-locale="{ locale: locale, tra: 'Thanks for signing up! Confirm |{email} is correct| to continue to the site', replace: { email: email } }">
           <b id="part1"></b>
           <a id="part2" href="#"></a>
           <i id="part3"></i>
@@ -213,7 +213,7 @@ describe('main.js', () => {
       }
     }).$mount()
 
-    vm.setLocale('es')
+    vm.$setLocale('es')
     vm.$nextTick(() => {
       expect(vm.$el.querySelector('#part1').textContent).toBe('Gracias por registrarte! Confirmar ')
       expect(vm.$el.querySelector('#part2').textContent).toBe('asdf@example.com es correcta')
