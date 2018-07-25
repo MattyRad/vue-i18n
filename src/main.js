@@ -23,7 +23,7 @@ export default {
     })
 
     Vue.prototype.$t = function (key, replacements = {}) {
-      var locale = replacements['locale'] || this.$root.locale
+      var locale = replacements['locale'] || this.locale
 
       var translation = fetch(locale, key)
 
